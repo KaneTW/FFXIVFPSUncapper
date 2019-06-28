@@ -1,5 +1,6 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
-#include "pch.h"
+#include <windows.h>
+#include <Psapi.h>
+
 
 
 static HRESULT(WINAPI* OrigDirectInput8Create)(
@@ -19,6 +20,16 @@ extern "C" __declspec(dllexport) HRESULT WINAPI DirectInput8Create(
 )
 {
 	return OrigDirectInput8Create(hinst, dwVersion, riidltf, ppvOut, punkOuter);
+}
+
+LPVOID FindInstructionAddress(LPVOID hMain)
+{
+	MODULEINFO moduleInfo;
+	if (!GetModuleInformation(GetCurrentProcess(), (HMODULE)hMain, &moduleInfo, sizeof(moduleInfo))) {
+		return NULL;
+	}
+
+	auto size = moduleInfo.SizeOfImage;
 }
 
 
